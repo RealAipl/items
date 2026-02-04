@@ -1,0 +1,23 @@
+name: Unzip items.zip
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip items
+        run: |
+          unzip -o items.zip -d items
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add items
+          git commit -m "extract minecraft item icons" || echo "No changes"
+          git push
