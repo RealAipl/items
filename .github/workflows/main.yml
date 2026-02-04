@@ -3,21 +3,30 @@ name: Unzip items.zip
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   unzip:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Unzip items
+      - name: Remove old extracted folder
+        run: |
+          rm -rf items
+
+      - name: Unzip items.zip
         run: |
           unzip -o items.zip -d items
 
       - name: Commit extracted files
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add items
-          git commit -m "extract minecraft item icons" || echo "No changes"
+          git commit -m "Extract minecraft item icons" || echo "No changes"
           git push
